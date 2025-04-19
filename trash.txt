@@ -1,0 +1,613 @@
+        <!-- <button>👤 Profile</button> -->
+        <!-- <button onClick=signout() >🚪 Logout</button> -->
+
+
+
+        post_add.js
+
+// let post = "";
+// document.getElementById('post').addEventListener('change', async (e) => {
+//     const post_img = e.target.files[0];
+//     post = await convertBase64(post_img);
+//     document.getElementById('preview').innerHTML = `<img width="200px" height="auto" src="${element.post[0]}"></img>`;
+// });
+
+// async function addPost(e) {
+//     e.preventDefault();
+
+//     const description = document.getElementById('description').value;
+
+//     // Prepare the data to be sent
+//     const data = { post, description , userId};
+
+//     const options = {
+//         headers: {
+//             "Content-Type": "application/json",
+//             "Authorization": `Bearer ${localStorage.getItem('token')}`, // Add token for authentication
+//         },
+//         method: "POST",
+//         body: JSON.stringify(data),
+//     };
+
+//     try {
+//         const id = localStorage.getItem('id')
+//         const response = await fetch(`/api/addPost/${id}`, options);
+//         const data = await response.json();
+
+//         if (response.status === 201) {
+//             alert(data.message);
+//             window.location.href = "/"; // Redirect after successful post upload
+//         } else {
+//             alert(data.message);
+//         }
+
+//     } catch (err) {
+//         console.log(err);
+//         alert('Error uploading post');
+//     }
+// }
+
+// // Convert image to base64
+// function convertBase64(file) {
+//     return new Promise((resolve, reject) => {
+//         const fileReader = new FileReader();
+//         fileReader.readAsDataURL(file);
+
+//         fileReader.onload = () => {
+//             resolve(fileReader.result);
+//         };
+
+//         fileReader.onerror = () => {
+//             reject(fileReader.error);
+//         };
+//     });
+// }
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Instagram Clone</title>
+  <link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Swiper CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <link rel="stylesheet" href="css/index.css">
+  <style>
+    /* Navbar Adjustments */
+    .navbar {
+      background: #fff;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    }
+    .navbar .welcome {
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: var(--text-color);
+    }
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      height: 100vh;
+      background: #fff;
+      border-right: 1px solid var(--border-color);
+      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+      padding: 20px;
+      z-index: 99;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .sidebar a, .sidebar button {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 15px;
+      text-decoration: none;
+      color: var(--text-color);
+      font-size: 1rem;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .sidebar a:hover, .sidebar button:hover {
+      background: var(--insta-gradient);
+      color: #fff;
+    }
+    .sidebar button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+    }
+    .sidebar i {
+      font-size: 1.2rem;
+    }
+    /* Content Adjustment */
+    .posts {
+      margin-left: 270px; /* Account for sidebar width */
+      padding: 20px;
+    }
+    /* Swiper Styles (unchanged) */
+    .swiper {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      max-height: 45vh;
+    }
+    .swiper-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .swiper-button-next,
+    .swiper-button-prev {
+      color: #fff;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      --swiper-navigation-size: 16px;
+    }
+    .swiper-pagination-bullet {
+      background: #fff;
+      opacity: 0.7;
+    }
+    .swiper-pagination-bullet-active {
+      background: #fff;
+      opacity: 1;
+    }
+    .post-section {
+      max-width: 430px;
+      margin: 40px auto;
+      background: var(--post-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .post-image {
+      width: 100%;
+      object-fit: contain;
+      height: 45vh;
+    }
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 60px;
+        padding: 10px;
+      }
+      .sidebar a, .sidebar button {
+        justify-content: center;
+        padding: 10px;
+      }
+      .sidebar span {
+        display: none;
+      }
+      .posts {
+        margin-left: 80px;
+      }
+      .navbar .welcome {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <a href="post_add.html">
+      <i class="fas fa-plus-square"></i>
+      <span>Add Post</span>
+    </a>
+    <a href="profile.html">
+      <i class="fas fa-user"></i>
+      <span>Profile</span>
+    </a>
+    <button onclick="signout()">
+      <i class="fas fa-sign-out-alt"></i>
+      <span>Logout</span>
+    </button>
+  </div>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo"><img src="images/instalogo.png" alt="Instagram" srcset=""></div>
+    <div class="welcome" id="username">Welcome</div>
+    <div class="profile-menu" onclick="toggleDropdown()">
+      <img src="https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659652_640.png" id="profile_pic" alt="Profile" />
+      <span>▼</span>
+      <div class="dropdown" id="dropdownMenu">
+        <div id="dn-cont" style="text-align: center; padding: 10px;">
+          <a href="profile.html" style="text-decoration: none; text-align: center;">Profile</a><br>
+          <a href="#" onclick="signout()" style="text-decoration: none; text-align: center;">Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Post Section -->
+  <div class="posts" id="posts"></div>
+
+  <!-- Swiper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script>
+    function toggleDropdown() {
+      const dropdown = document.getElementById("dropdownMenu");
+      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    }
+
+    document.addEventListener("click", function (e) {
+      const menu = document.querySelector(".profile-menu");
+      if (!menu.contains(e.target)) {
+        document.getElementById("dropdownMenu").style.display = "none";
+      }
+    });
+
+    let posts = document.getElementById('posts');
+    let username = document.getElementById('username');
+    let profile_pic = document.getElementById('profile_pic');
+
+    async function loadPosts() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        window.location.href = '/login.html';
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:8080/api/loadPosts", {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+
+        const data = await response.json();
+        console.log("Response JSON:", data.posts, data.userData._id);
+
+        if (response.status === 200) {
+          localStorage.setItem('id', data.userData._id);
+          let str = "";
+
+          data.posts.forEach((element, index) => {
+            if (Array.isArray(element.post) && element.post.length > 1) {
+              let slides = element.post.map(img => `
+                <div class="swiper-slide">
+                  <img src="${img || 'default.jpg'}" alt="Post Image" />
+                </div>
+              `).join('');
+
+              str += `
+                <div class="post-section">
+                  <div class="post-header">
+                    <img src="${element.user?.profile_pic || 'default.jpg'}" alt="User" />
+                    <strong>${element.user?.username || 'Unknown'}</strong>
+                  </div>
+                  <div class="swiper" id="swiper-${index}">
+                    <div class="swiper-wrapper">
+                      ${slides}
+                    </div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-pagination"></div>
+                  </div>
+                  <div class="post-description">
+                    ${element.description}
+                  </div>
+                </div>
+              `;
+            } else {
+              const image = Array.isArray(element.post) ? element.post[0] : element.post;
+              str += `
+                <div class="post-section">
+                  <div class="post-header">
+                    <img src="${element.user?.profile_pic || 'default.jpg'}" alt="User" />
+                    <strong>${element.user?.username || 'Unknown'}</strong>
+                  </div>
+                  <img class="post-image" src="${image || 'default.jpg'}" alt="Post Image" />
+                  <div class="post-description">
+                    ${element.description}
+                  </div>
+                </div>
+              `;
+            }
+          });
+
+          profile_pic.src = data.userData.profile_pic;
+          posts.innerHTML = str;
+          username.textContent = `Welcome ${data.userData.username}`;
+
+          data.posts.forEach((element, index) => {
+            if (Array.isArray(element.post) && element.post.length > 1) {
+              new Swiper(`#swiper-${index}`, {
+                loop: true,
+                navigation: {
+                  nextEl: `.swiper-button-prev`,
+                  prevEl: `.swiper-button-next`,
+                },
+                pagination: {
+                  el: `.swiper-pagination`,
+                  clickable: true,
+                },
+              });
+            }
+          });
+        } else {
+          console.error('Invalid response structure:', data);
+          window.location.href = '/login.html';
+        }
+      } catch (err) {
+        console.log('Error:', err);
+        window.location.href = '/login.html';
+      }
+    }
+
+    function signout() {
+      alert("Signing Out");
+      localStorage.removeItem("token");
+      localStorage.removeItem("id"); 
+      window.location.href = "/login.html";
+    }
+
+    loadPosts();
+  </script>
+</body>
+</html>
+
+
+css
+
+:root {
+  --insta-gradient: linear-gradient(45deg, #feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5);
+  --bg-gradient: linear-gradient(to right, #fdfbfb, #ebedee);
+  --post-bg: #ffffffdd;
+  --text-color: #262626;
+  --border-color: #dbdbdb;
+  --ig-primary-background: 255, 255, 255;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--ig-primary-background);
+  color: var(--text-color);
+  min-height: 100vh;
+}
+
+/* Navbar */
+.navbar {
+  background: #fff;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.navbar .welcome {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.profile-menu {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.profile-menu img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 8px;
+  border: 2px solid #d62976;
+}
+
+.profile-menu span {
+  font-size: 18px;
+  color: #888;
+}
+
+.dropdown {
+  display: none;
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  width: 140px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.dropdown button {
+  display: block;
+  padding: 15px;
+  text-decoration: none;
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.dropdown a:hover {
+  background-color: #f7f7f7;
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100vh;
+  background: #fff;
+  border-right: 1px solid var(--border-color);
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.sidebar a, .sidebar button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 15px;
+  text-decoration: none;
+  color: var(--text-color);
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.sidebar a:hover, .sidebar button:hover {
+  background: var(--insta-gradient);
+  color: #fff;
+}
+
+.sidebar button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}
+
+.sidebar i {
+  font-size: 1.2rem;
+}
+
+/* Posts */
+.posts {
+  margin-left: 270px;
+  padding: 20px;
+}
+
+/* Post Box */
+.post-section {
+  max-width: 430px;
+  margin: 40px auto;
+  background: var(--post-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  backdrop-filter: blur(5px);
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+}
+
+.post-header img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  margin-right: 12px;
+  border: 2px solid #962fbf;
+}
+
+.post-header strong {
+  font-size: 16px;
+}
+
+.post-image {
+  width: 100%;
+  object-fit: contain;
+  height: 45vh;
+  padding: 14px;
+}
+
+.post-description {
+  padding: 16px;
+  font-size: 15px;
+  color: #444;
+}
+
+/* Swiper */
+.swiper {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-height: 45vh;
+}
+
+.swiper-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: #fff;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  --swiper-navigation-size: 16px;
+}
+
+.swiper-pagination-bullet {
+  background: #fff;
+  opacity: 0.7;
+}
+
+.swiper-pagination-bullet-active {
+  background: #fff;
+  opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 60px;
+    padding: 10px;
+  }
+  .sidebar a, .sidebar button {
+    justify-content: center;
+    padding: 10px;
+  }
+  .sidebar span {
+    display: none;
+  }
+  .posts {
+    margin-left: 80px;
+  }
+  .navbar .welcome {
+    font-size: 1rem;
+  }
+  .post-section {
+    margin: 20px;
+  }
+}

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Instagram Login</title>
+  <link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Grand+Hotel&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+
+  <div class="login-container">
+    <div class="logo">Instagram</div>
+    
+    <form onsubmit="pass_reset(event)">
+      <input type="password" name="password" placeholder="Enter your new password" id="password" required>
+
+      <input type="password" name="cpassword" placeholder="Confirm Password"  id="cpassword"   required>
+      <button type="submit">Change Password</button>
+    </form>
+
+    <!-- <a href="forgot.html" class="forgot-link">Forgot password?</a> -->
+    <br>
+    <div class="bottom-text">
+        New to Instagram? <a href="/signup.html">SignUp</a>
+      </div>
+    
+  </div>
+
+  <script src="js/change_pass.js"></script>
+</body>
+</html>

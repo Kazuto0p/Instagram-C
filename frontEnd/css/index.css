@@ -1,0 +1,237 @@
+:root {
+  --insta-gradient: linear-gradient(45deg, #feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5);
+  --bg-gradient: linear-gradient(to right, #fdfbfb, #ebedee);
+  --post-bg: #ffffffdd;
+  --text-color: #262626;
+  --border-color: #dbdbdb;
+  --ig-primary-background: 255, 255, 255;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--ig-primary-background);
+  color: var(--text-color);
+  min-height: 100vh;
+}
+
+/* Navbar */
+.navbar {
+  background: #fff;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.navbar .welcome {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.profile-menu {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-menu img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #d62976;
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100vh;
+  background: #fff;
+  border-right: 1px solid var(--border-color);
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.sidebar a, .sidebar button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 15px;
+  text-decoration: none;
+  color: var(--text-color);
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.sidebar a:hover, .sidebar button:hover {
+  background: var(--insta-gradient);
+  color: #fff;
+}
+
+.sidebar button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}
+
+.sidebar i {
+  font-size: 1.2rem;
+}
+
+/* Posts */
+.posts {
+  margin-left: 270px;
+  padding: 20px;
+}
+
+/* Post Box */
+.post-section {
+  max-width: 430px;
+  margin: 40px auto;
+  background: var(--post-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  backdrop-filter: blur(5px);
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+}
+
+.post-header img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  margin-right: 12px;
+  border: 2px solid #962fbf;
+}
+
+.post-header strong {
+  font-size: 16px;
+}
+
+.post-image {
+  width: 100%;
+  object-fit: contain;
+  height: 45vh;
+  padding: 14px;
+}
+
+.post-description {
+  padding: 16px;
+  font-size: 15px;
+  color: #444;
+}
+
+/* Swiper */
+.swiper {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-height: 45vh;
+}
+
+.swiper-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: #fff;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  --swiper-navigation-size: 16px;
+}
+
+.swiper-pagination-bullet {
+  background: #fff;
+  opacity: 0.7;
+}
+
+.swiper-pagination-bullet-active {
+  background: #fff;
+  opacity: 1;
+}
+
+/* Add Post Button */
+#bc {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--insta-gradient);
+  padding: 15px;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  transition: transform 0.2s;
+}
+
+#bc:hover {
+  transform: scale(1.1);
+}
+
+#bc svg {
+  width: 30px;
+  height: 30px;
+  color: #fff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 60px;
+    padding: 10px;
+  }
+  .sidebar a, .sidebar button {
+    justify-content: center;
+    padding: 10px;
+  }
+  .sidebar span {
+    display: none;
+  }
+  .posts {
+    margin-left: 80px;
+  }
+  .navbar .welcome {
+    font-size: 1rem;
+  }
+  #bc {
+    bottom: 10px;
+    right: 10px;
+    padding: 12px;
+  }
+  #bc svg {
+    width: 25px;
+    height: 25px;
+  }
+}
