@@ -3,7 +3,7 @@ import express from "express"
 
 import { signUp,logIn , getUser, editUser,sendotp,verifyotp,pass_reset} from "../controller/user_controller.js"
 
-import { addPost,loadPosts, getPost,deleteProfile} from "../controller/post_controller.js"
+import { addPost,loadPosts, getPost,deleteProfile, likePost, sdel} from "../controller/post_controller.js"
 
 import auth from "../middlewares/auth.js"
 
@@ -36,6 +36,9 @@ insta.post('/verifyotp',verifyotp)
 insta.post('/pass_reset',pass_reset)
 // insta.get("/zx",zx)
 
+insta.post('/like/:postId',auth, likePost)
+
+insta.post('/sdel/:postId', auth, sdel);
 export default insta
 
 

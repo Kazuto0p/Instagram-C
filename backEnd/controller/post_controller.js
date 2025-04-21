@@ -34,188 +34,160 @@ export const addPost = async function addPost(req, res) {
 };
 
 
-// export const addPost = async function addPost(req, res) {
-//     try {
-//         // Extract the post and description from the request body
-//         const { post, description } = req.body;
 
-//         // Ensure all necessary fields are provided
-//         if (!post || !description) {
-//             return res.status(400).json({ message: "Please fill all the fields" });
-//         }
-
-//         // Extract the token from the Authorization header
-//         const token = req.headers.authorization?.split(' ')[1]; // Extract token after "Bearer"
-
-//         // If the token is missing, return error
-//         if (!token) {
-//             return res.status(403).json({ message: "No token provided" });
-//         }
-
-//         // Verify the token to get the user ID
-//         const decoded = jwt.verify(token, process.env.JWT_KEY); // process.env.JWT_KEY should be your JWT secret
-//         const userId = decoded.id; // Extracted user ID from the token
-
-//         // Fetch user from the database to ensure the user exists
-//         const user = await userSchema.findById(userId);
-//         if (!user) {
-//             return res.status(404).json({ message: "User not found" });
-//         }
-
-//         // Create the post and save to database with user reference
-//         const newPost = new postSchema({
-//             post, // Base64 encoded image
-//             description,
-//             user: userId, // Store the user ID in the post schema
-//         });
-
-//         // Save the post in the database
-//         const savedPost = await newPost.save();
-
-//         // Respond with the saved post data
-//         res.status(201).json({
-//             message: "Post uploaded successfully",
-//             post: savedPost // Send back the saved post as part of the response
-//         });
-
-//     } catch (err) {
-//         console.log(err);
-//         res.status(500).json({ message: "Error uploading post", error: err.message });
-//     }
-// };
-
-
-
-
-
-// export const loadPosts = async function loadPosts(req, res) {
-
-//     console.log("Inside Load posts")
-//     try {
-//         const userData = await userSchema.findOne({ _id: req.user })
-//         if (!userData) {
-//             return res.status(404).json({ message: "User not found" });
-//         }
-//         // ✅ Populate posts with user information (username, profile_pic)
-//         const posts = await postSchema
-//             .find()
-//             .populate("user", "username profile_pic"); // populate the user field
-
-//         res.status(200).json({
-//             message: "Posts loaded successfully",
-//             posts, // returns the populated posts with user data
-//             userData, // returns the logged-in user's info
-//         });
-
-
-//         const data = await postSchema.find()
-//         res.status(200).send({ data, userData })
-//     }
-
-//     catch (err) {
-
-//         res.status(500).send({ error: err })
-//     }
-
-
-
-
-// }
 
 
 export const loadPosts = async function loadPosts(req, res) {
-    console.log("Inside Load posts");
-  
-    try {
-      // Ensure the user is authenticated
-      const userData = await userSchema.findOne({ _id: req.user });
+  console.log("Inside Load posts");
+
+  try {
+    // Ensure the user is authenticated
+    const userData = await userSchema.findOne({ _id: req.user });
 
     //   console.log(userData);
-      
-  
-      if (!userData) {
-        return res.status(404).json({ message: "User not found" });
-      }
-  
-      // Query the posts and populate the user field (with username and profile_pic)
-      const posts = await postSchema
+
+
+    if (!userData) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Query the posts and populate the user field (with username and profile_pic)
+    const posts = await postSchema
       .find()
       .populate("user", "username profile_pic");
-    
+
 
     // const posts = await postSchema.find()
 
-    console.log(posts,"this is posts");
-    
-      // Send response with posts and user data
-      return res.status(200).json({
-        message: "Posts loaded successfully",
-        posts,
-        userData,
-      });
-  
-    } catch (err) {
-      // If there's an error, send an error message as a response
-      console.error("Error loading posts:", err);
-      // Ensure only one response is sent
-      if (!res.headersSent) {
-        return res.status(500).json({ message: "Error loading posts", error: err.message });
-      }
+    // console.log(posts,"this is posts");
+
+    // Send response with posts and user data
+    return res.status(200).json({
+      message: "Posts loaded successfully",
+      posts,
+      userData,
+    });
+
+  } catch (err) {
+    // If there's an error, send an error message as a response
+    console.error("Error loading posts:", err);
+    // Ensure only one response is sent
+    if (!res.headersSent) {
+      return res.status(500).json({ message: "Error loading posts", error: err.message });
     }
-  };
+  }
+};
 
 
-  export const getPost = async function getPost(req,res){
+export const getPost = async function getPost(req, res) {
 
 
-    try{
-
-        
-        console.log("Inside get posts")
-        
-        let user = req.params.id
-        
-        console.log("userd",user)
-        
-        const userData = await postSchema.find({user})
-
-        res.status(200).send(userData)
-        
-    }
-    
-    catch(err){
+  try {
 
 
-        console.log(err)
-        res.status(500).json({message:err})
-    }
-   
+    console.log("Inside get posts")
+
+    let user = req.params.id
+
+    // console.log("userd",user)
+
+    const userData = await postSchema.find({ user })
+
+    res.status(200).send(userData)
+
+  }
+
+  catch (err) {
+
+
+    console.log(err)
+    res.status(500).json({ message: err })
+  }
+
 }
 
 
 export const deleteProfile = async function deleteProfile(req, res) {
 
-    try {
+  try {
 
-      const id = req.params.id;
-  
-      // Delete all posts of user
-      const post_delete = await postSchema.deleteMany({ userid: id });
-  
-      // delete the user
-      const user_delete = await userSchema.findByIdAndDelete(id);
-  
-      if (!user_delete) {
-        return res.status(404).json({ message: "User not found" });
-      }
-  
+    const id = req.params.id;
 
-      res.status(200).json({message:"User Deleted Successfully"})
+    // Delete all posts of user
+    const post_delete = await postSchema.deleteMany({ userid: id });
 
+    // delete the user
+    const user_delete = await userSchema.findByIdAndDelete(id);
 
-
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: err.message || "Internal server error" });
+    if (!user_delete) {
+      return res.status(404).json({ message: "User not found" });
     }
-  };
+
+
+    res.status(200).json({ message: "User Deleted Successfully" })
+
+
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message || "Internal server error" });
+  }
+};
+
+
+export const likePost = async function likePost(req, res) {
+  try {
+    const { postId } = req.params;
+    const userId = req.user;
+
+    const post = await postSchema.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: " Post not Found " })
+    }
+
+    const isLiked = post.likes.includes(userId);
+    if (isLiked) {
+      post.likes = post.likes.filter((id) => id.toString() !== userId);
+      post.likeCount = Math.max(0, post.likeCount - 1); // Decrement like count
+    } else {
+      // Like: Add user ID to likes array
+      post.likes.push(userId);
+      post.likeCount += 1; // Increment like count
+    }
+
+    await post.save();
+
+    res.status(200).json({
+      message: isLiked ? "Unliked" : "Liked",
+      likes: post.likes,
+      likeCount: post.likeCount,
+    });
+
+  } catch (error) {
+    console.error("Error liking/unliking post:", err);
+    res.status(500).json({ message: "Error liking/unliking post", error: err.message });
+  }
+
+}
+
+
+export const sdel = async function sdel(req, res) {
+  try {
+    const postId = req.params.postId;
+    const userId = req.user; // From auth middleware
+
+    const deluser = await postSchema.findOneAndDelete({
+      _id: postId,
+      user: userId, // Changed from userId to user to match schema
+    });
+
+    if (!deluser) {
+      return res.status(404).json({ message: "Post not found or not authorized" });
+    }
+
+    return res.status(200).json({ message: "Post deleted successfully" });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};

@@ -7,9 +7,9 @@
   <link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png">
   <link rel="stylesheet" href="css/profile.css" />
   <!-- Swiper CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
   <style>
-    /* Dropdown styles (unchanged) */
+    /* Dropdown styles */
     .dropdown {
       position: relative;
       display: inline-block;
@@ -48,6 +48,83 @@
     .dropdown:hover .dropdown-content {
       display: block;
     }
+    /* Posts grid styles */
+    .posts-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .post-container {
+      position: relative;
+      cursor: pointer;
+    }
+    .post-image {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+    }
+    /* Swiper styles */
+    .swiper {
+      width: 100%;
+      height: 100%;
+    }
+    .swiper-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .swiper-button-prev,
+    .swiper-button-next {
+      color: #fff;
+    }
+    .swiper-pagination-bullet-active {
+      background: #fff;
+    }
+    .post-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px;
+      background: rgba(255, 255, 255, 0.9);
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+    .heart-icon {
+      cursor: pointer;
+      transition: fill 0.2s;
+    }
+    .heart-icon.liked {
+      fill: red;
+    }
+    .like-count {
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .comment-btn, .share-btn {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: #000;
+    }
+    .share-btn img {
+      width: 24px;
+      height: 24px;
+    }
+    .like-animation {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation: likeFade 0.8s ease-in-out;
+      pointer-events: none;
+    }
+    @keyframes likeFade {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(1.2); }
+    }
     /* Modal styles */
     .modal {
       display: none;
@@ -85,40 +162,45 @@
       line-height: 30px;
       text-align: center;
     }
-    .modal-swiper {
-      width: 100%;
-      height: 100%;
-      max-height: 80vh;
-      aspect-ratio: 1 / 1;
-    }
-    .modal-swiper .swiper-slide img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: block;
-    }
-    .modal-swiper .swiper-button-next,
-    .modal-swiper .swiper-button-prev {
-      color: #fff;
-      background: rgba(0, 0, 0, 0.5);
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      --swiper-navigation-size: 16px;
-    }
-    .modal-swiper .swiper-pagination-bullet {
-      background: #fff;
-      opacity: 0.7;
-    }
-    .modal-swiper .swiper-pagination-bullet-active {
-      background: #fff;
-      opacity: 1;
-    }
-    /* Single image in modal */
     .modal-single-image {
-      max-width: 90%;
+      max-width: 100%;
       max-height: 80vh;
       object-fit: contain;
+    }
+    .modal-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      background: #fff;
+    }
+    .modal-actions .heart-icon {
+      cursor: pointer;
+    }
+    .modal-actions .like-count {
+      font-size: 14px;
+    }
+    .modal-actions .comment-btn,
+    .modal-actions .share-btn {
+      display: flex;
+      align-items: center;
+    }
+    .modal-actions .share-btn img {
+      width: 24px;
+      height: 24px;
+    }
+    /* Delete button */
+    .delete-post {
+      background: #ff4d4d;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .delete-post:hover {
+      background: #e60000;
     }
   </style>
 </head>
@@ -129,7 +211,7 @@
       <img id="profile_pic" class="profile-pic" alt="Profile Picture" />
       <div class="profile-info">
         <div class="top-row">
-          <h2 class="username" id="username">john_doe</h2>
+          <h2 class="username" id="username"></h2>
           <div class="dropdown">
             <button class="dropdown-btn">Options</button>
             <div class="dropdown-content">
@@ -140,12 +222,12 @@
           </div>
         </div>
         <div class="stats">
-          <span><strong id="num_posts">42</strong> posts</span>
-          <span><strong>2,345</strong> followers</span>
-          <span><strong>340</strong> following</span>
+          <span><strong id="num_posts">0</strong> posts</span>
+          <span><strong>0</strong> followers</span>
+          <span><strong>0</strong> following</span>
         </div>
         <div class="bio">
-          <strong id="under_name">John Doe</strong><br>
+          <strong id="under_name"></strong><br>
           Travel ✈️ | Foodie 🍕 | Developer 💻<br>
         </div>
       </div>
@@ -161,147 +243,8 @@
       </div>
     </div>
   </div>
-
   <!-- Swiper JS -->
-  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-  <script>
-    let username = document.getElementById('username');
-    let num_posts = document.getElementById('num_posts');
-    let under_name = document.getElementById('under_name');
-    let profile_pic = document.getElementById('profile_pic');
-    let posts = document.getElementById('posts');
-    let modal = document.getElementById('imageModal');
-    let modalContent = document.getElementById('modalContent');
-    let str = "";
-    let id = localStorage.getItem('id');
-    let postData = []; // Store post data for modal
-
-    async function loadProfile() {
-      try {
-        // Fetch user data
-        const response1 = await fetch(`/api/getUser/${id}`);
-        const data1 = await response1.json();
-
-        username.textContent = data1.username;
-        under_name.textContent = data1.username;
-        profile_pic.src = data1.profile_pic;
-
-        // Fetch posts
-        const response2 = await fetch(`/api/getPost/${id}`);
-        const data2 = await response2.json();
-
-        // Reverse posts to show latest first
-        let reverse_data2 = data2.reverse();
-        postData = reverse_data2; // Store for modal
-
-        reverse_data2.forEach((element, index) => {
-          // Use first image for grid display
-          const image = Array.isArray(element.post) ? element.post[0] : element.post;
-          str += `
-            <div class="post-container" onclick="openModal(${index})">
-              <img src="${image || 'default.jpg'}" class="single-image" alt="Post Image" />
-            </div>
-          `;
-        });
-
-        posts.innerHTML = str;
-        num_posts.textContent = data2.length;
-      } catch (err) {
-        console.log(err);
-      }
-    }
-
-    function openModal(index) {
-      const element = postData[index];
-      modalContent.innerHTML = '';
-      
-      if (Array.isArray(element.post) && element.post.length > 1) {
-        // Multiple images: use Swiper
-        let slides = element.post.map(img => `
-          <div class="swiper-slide">
-            <img src="${img || 'default.jpg'}" alt="Post Image" />
-          </div>
-        `).join('');
-        
-        modalContent.innerHTML = `
-          <div class="modal-swiper" id="modal-swiper">
-            <div class="swiper-wrapper">
-              ${slides}
-            </div>
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-button-next"></div>
-            <div class="swiper-pagination"></div>
-          </div>
-        `;
-        
-        modal.style.display = 'flex';
-        
-        // Initialize Swiper
-        new Swiper('#modal-swiper', {
-          loop: true,
-          navigation: {
-            nextEl: '.swiper-button-prev',
-            prevEl: '.swiper-button-next',
-          },
-          pagination: {
-            el: '.swiper-pagination',
-            clickable: true,
-          }
-        });
-      } else {
-        // Single image
-        const image = Array.isArray(element.post) ? element.post[0] : element.post;
-        modalContent.innerHTML = `
-          <img src="${image || 'default.jpg'}" class="modal-single-image" alt="Post Image" />
-        `;
-        modal.style.display = 'flex';
-      }
-    }
-
-    function closeModal() {
-      modal.style.display = 'none';
-      modalContent.innerHTML = '';
-    }
-
-    // Close modal when clicking outside content
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        closeModal();
-      }
-    });
-
-    loadProfile();
-
-    function editProfile() {
-      window.location.href = "edProfile.html";
-    }
-
-    async function deleteProfile() {
-      try {
-        const confirmDelete = confirm("Are you sure you want to Delete your Profile?");
-        if (!confirmDelete) {
-          return;
-        }
-        const response = await fetch(`/api/deleteProfile/${id}`);
-        const data = await response.json();
-        if (response.status === 200) {
-          alert("Profile Deleted Successfully");
-          localStorage.clear();
-          window.location.href = "/";
-        } else {
-          alert(data.message);
-        }
-      } catch (err) {
-        console.log(err);
-        alert("Error deleting profile");
-      }
-    }
-
-    function signout() {
-      localStorage.clear();
-      alert("Logging out");
-      window.location.href = "/";
-    }
-  </script>
+  <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+  <script src="js/profile.js"></script>
 </body>
 </html>

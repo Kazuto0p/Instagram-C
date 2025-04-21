@@ -12,6 +12,7 @@
   <!-- Font Awesome for Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
   <link rel="stylesheet" href="css/index.css">
+  <!-- <script src="/frontEnd/js/index.js" defer></script> -->
   <style>
     /* Navbar */
     .navbar {
@@ -66,6 +67,7 @@
       text-decoration: none;
       color: var(--text-color);
       font-size: 1rem;
+      margin-top: 10px;
       font-weight: 500;
       border-radius: 8px;
       transition: background 0.2s, color 0.2s;
@@ -138,7 +140,7 @@
       right: 20px;
       background: var(--insta-gradient);
       padding: 15px;
-      border-radius: 50%;
+      /* border-radius: 50%; */
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       z-index: 1000;
       transition: transform 0.2s;
@@ -230,111 +232,6 @@
 
   <!-- Swiper JS -->
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-  <script>
-    let posts = document.getElementById('posts');
-    let username = document.getElementById('username');
-    let profile_pic = document.getElementById('profile_pic');
-
-    async function loadPosts() {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        window.location.href = '/login.html';
-        return;
-      }
-
-      try {
-        const response = await fetch("http://localhost:8080/api/loadPosts", {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-
-        const data = await response.json();
-        console.log("Response JSON:", data.posts, data.userData._id);
-
-        if (response.status === 200) {
-          localStorage.setItem('id', data.userData._id);
-          let str = "";
-
-          data.posts.forEach((element, index) => {
-            if (Array.isArray(element.post) && element.post.length > 1) {
-              let slides = element.post.map(img => `
-                <div class="swiper-slide">
-                  <img src="${img || 'default.jpg'}" alt="Post Image" />
-                </div>
-              `).join('');
-
-              str += `
-                <div class="post-section">
-                  <div class="post-header">
-                    <img src="${element.user?.profile_pic || 'default.jpg'}" alt="User" />
-                    <strong>${element.user?.username || 'Unknown'}</strong>
-                  </div>
-                  <div class="swiper" id="swiper-${index}">
-                    <div class="swiper-wrapper">
-                      ${slides}
-                    </div>
-                    <div class="swiper-button-prev"></div>
-                    <div class="swiper-button-next"></div>
-                    <div class="swiper-pagination"></div>
-                  </div>
-                  <div class="post-description">
-                    ${element.description}
-                  </div>
-                </div>
-              `;
-            } else {
-              const image = Array.isArray(element.post) ? element.post[0] : element.post;
-              str += `
-                <div class="post-section">
-                  <div class="post-header">
-                    <img src="${element.user?.profile_pic || 'default.jpg'}" alt="User" />
-                    <strong>${element.user?.username || 'Unknown'}</strong>
-                  </div>
-                  <img class="post-image" src="${image || 'default.jpg'}" alt="Post Image" />
-                  <div class="post-description">
-                    ${element.description}
-                  </div>
-                </div>
-              `;
-            }
-          });
-
-          profile_pic.src = data.userData.profile_pic;
-          posts.innerHTML = str;
-          username.textContent = `Welcome ${data.userData.username}`;
-
-          data.posts.forEach((element, index) => {
-            if (Array.isArray(element.post) && element.post.length > 1) {
-              new Swiper(`#swiper-${index}`, {
-                loop: true,
-                navigation: {
-                  nextEl: `.swiper-button-prev`,
-                  prevEl: `.swiper-button-next`,
-                },
-                pagination: {
-                  el: `.swiper-pagination`,
-                  clickable: true,
-                },
-              });
-            }
-          });
-        } else {
-          console.error('Invalid response structure:', data);
-          window.location.href = '/login.html';
-        }
-      } catch (err) {
-        console.log('Error:', err);
-        window.location.href = '/login.html';
-      }
-    }
-
-    function signout() {
-      alert("Signing Out");
-      localStorage.removeItem("token");
-      localStorage.removeItem("id"); 
-      window.location.href = "/login.html";
-    }
-
-    loadPosts();
-  </script>
+  <script src="js/index.js"></script>
 </body>
 </html>

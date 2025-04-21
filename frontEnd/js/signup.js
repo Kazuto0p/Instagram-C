@@ -15,7 +15,7 @@ async function signUp(e) {
     let password = document.getElementById('password').value;
     let c_password = document.getElementById('cpassword').value;
 
-    // Regex patterns for validation
+    // Regex for validation
     const usernameRegex = /^[a-zA-Z0-9_.]{3,20}$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phoneRegex = /^(\(\d{3}\)\s?|\d{3}-?)\d{3}-?\d{4}$/;
